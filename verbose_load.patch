@@ -1,0 +1,44 @@
+Index: lib/vendor/symfony/lib/plugins/sfDoctrinePlugin/lib/vendor/doctrine/Doctrine/Data/Import.php
+===================================================================
+--- lib/vendor/symfony/lib/plugins/sfDoctrinePlugin/lib/vendor/doctrine/Doctrine/Data/Import.php	(révision 7691)
++++ lib/vendor/symfony/lib/plugins/sfDoctrinePlugin/lib/vendor/doctrine/Doctrine/Data/Import.php	(copie de travail)
+@@ -335,19 +335,24 @@
+         }
+ 
+         $manager = Doctrine_Manager::getInstance();
+-        foreach ($manager as $connection) {
+-            $tree = $connection->unitOfWork->buildFlushTree(array_keys($array));
++        $connection = $manager->getCurrentConnection();
++        $tree = $connection->unitOfWork->buildFlushTree(array_keys($array));
+ 
+-            foreach ($tree as $model) {
+-                foreach ($this->_importedObjects as $obj) {
++        $start_time = microtime(true);
++        foreach ($tree as $model) {
++            $start_model_time = microtime(true);
++            printf("%-35s", $model);
++            foreach ($this->_importedObjects as $obj) {
+ 
+-                    if ($obj instanceof $model) {
+-                        $obj->save();
+-                    }
++                if ($obj instanceof $model) {
++                    $obj->save();
+                 }
+             }
++            $end_model_time = microtime(true);
++            printf("%10s : %7.3fs\n", "load time", $end_model_time - $start_model_time);
+         }
+-
++        $end_time = microtime(true);
++        printf("Total load time : %10.2fs\n", $end_time - $start_time);
+     }
+ 
+     /**
+@@ -399,4 +404,4 @@
+     {
+         return sprintf('(%s) ', $table->getTableName());
+     }
+-}
+\ No newline at end of file
++}

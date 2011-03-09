@@ -1,0 +1,6 @@
+usage :
+Show in which order doctrine load your fixtures (and time it take)
+
+install :
+cd "root of your symfony project"
+patch -p0 -i verbose_load_patch 
