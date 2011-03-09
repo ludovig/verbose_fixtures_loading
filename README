@@ -1,5 +1,5 @@
 usage :
-Show in which order doctrine load your fixtures (and time it take)
+Show in which order doctrine load your fixtures (and time it takes)
 
 install :
 cd "root of your symfony project"
